@@ -205,3 +205,70 @@ Workflow Planning에서는 반나절이라는 시간 제약을 반영해서,
 **AI Response**: "(1) Set INTEGRATION_CONTRACT.md Status to FROZEN (v0.1.0), team-approved 2026-09-07; added FROZEN rule (changes only via §15 CCR) and updated closing section. (2) Confirmed aidlc-state: Units Generation = [x] approved; Application Design [x]; Integration Contract now [x] FROZEN; updated Current Stage. (3) Verified git working state: branch=main, HEAD=1926164, only untracked = 20 documentation/contract files (aidlc-docs/* + coordination/INTEGRATION_CONTRACT.md); NO product code (no backend/ or frontend/ dirs) — Construction not started, as required. (4) Defined shared baseline for U1/U2/U3: recommended a single pre-construction checkpoint commit of the 20 docs on main so all three branch from the same commit with the FROZEN contract committed. Did NOT create the commit (on default branch main; awaiting user go-ahead per commit policy). No Functional Design or code started."
 **Status**: FROZEN v0.1.0; pre-construction baseline verified; awaiting user decision on checkpoint commit
 **Context**: Integration Contract FROZEN → pre-Construction baseline setup
+
+---
+
+## Construction (U2) - Functional Design started
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "당신은 U2 — Order · Session · Realtime만 담당합니다. 승인된 Requirements, User Stories, Application Design, Units Plan, coordination/INTEGRATION_CONTRACT.md를 먼저 읽어주세요. 현재 branch가 unit/u2-order-session인지, baseline이 pre-construction-v0.1.0 (= 2639417)인지 확인해주세요. U2 owned paths: backend/app/order/ backend/app/table_session/ backend/app/order_history/ backend/app/realtime/. Integration Contract에 정의된 U1 interface와 DB schema를 소비하고, Order/Session/History API와 SSE/event 구현을 제공합니다. 다른 Unit owned path, backend/app/main.py, coordination/INTEGRATION_CONTRACT.md는 수정하지 마세요. 계약 변경이 필요하면 임의 수정하지 말고 Contract Change Request를 제안해주세요. 먼저 U2 Functional Design만 진행하고 산출물을 보여주세요. 내가 검토/승인하기 전에는 Code Generation으로 넘어가지 마세요. authoritative aidlc-state.md는 Integration Lead가 single-writer로 관리하므로 직접 수정하지 말고, 필요한 state 변경이 있으면 보고만 해주세요."
+**AI Response**: "Confirmed branch=unit/u2-order-session and baseline: tag pre-construction-v0.1.0 -> commit 2639417 == HEAD. Read approved Requirements, User Stories, Application Design (components/methods/services/unit-of-work), Units Plan, and FROZEN INTEGRATION_CONTRACT.md v0.1.0. Scoped strictly to U2 owned paths (order/table_session/order_history/realtime). Starting Functional Design ONLY (per-unit, lightweight per aidlc-state); will NOT modify other units' paths, main.py, INTEGRATION_CONTRACT.md, or aidlc-state.md; will propose a CCR instead of editing the contract if a change is needed. Creating functional-design plan with embedded [Answer]: questions, then awaiting answers before generating artifacts; will not proceed to Code Generation without explicit review/approval."
+**Status**: Construction (U2) Functional Design — plan + questions authored, awaiting user answers
+**Context**: CONSTRUCTION - U2 Functional Design (Step 2-3): plan + clarifying questions
+
+---
+
+## Construction (U2) - Functional Design answers + CCR-001 raised
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "Q1~Q6, Q8~Q10은 기본값(A/D) 모두 수락합니다. Q7은 확인이 필요합니다 — U1이 common/에 bcrypt 헬퍼를 실제로 제공하는지 INTEGRATION_CONTRACT.md 또는 U1 산출물에서 먼저 확인해주세요. 만약 없다면 임의로 구현하지 말고 CCR을 작성해서 보여주세요."
+**AI Response**: "Recorded answers: Q1=A, Q2=D, Q3=A, Q4=A, Q5=A, Q6=A, Q8=A, Q9=A, Q10=A (defaults accepted). For Q7, verified against the FROZEN contract and Application Design: U1 does NOT expose a bcrypt hashing helper as a declared provided interface (§4 common/ = AdminContext/TabletContext/Success/ErrorResponse only; §12 U1 provides = persistence/auth-verify/login/menu/common-types, no hash util). Yet setup_table (C4/U2) must WRITE tables.password_hash while tablet_login (C1/U1) VERIFIES it -> shared bcrypt scheme required with no shared helper. Did NOT implement crypto in U2. Authored CCR-001 (aidlc-docs/construction/u2-order-session/ccr/CCR-001-shared-password-hash-helper.md) proposing U1 common/ expose hash_password/verify_password (bcrypt), consumed by U2 setup_table; classified minor/backward-compatible (no schema/endpoint/event change); no new requirements. Did NOT edit INTEGRATION_CONTRACT.md. Awaiting decision on CCR-001 before finalizing Q7 in artifacts."
+**Status**: Q1-Q6/Q8-Q10 answered (defaults); CCR-001 PROPOSED for Q7, awaiting Integration Lead/user decision
+**Context**: CONSTRUCTION - U2 Functional Design (Step 5): answers collected, CCR-001 raised
+
+---
+
+## Construction (U2) - CCR-001 submitted, Functional Design on hold
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "1번으로 진행합니다. CCR-001을 Integration Lead에게 제출하고 승인/반영 결과를 기다려주세요. 승인 전에는 Q7을 임의 확정하거나 관련 crypto 구현을 하지 말고, Functional Design 최종 산출물 생성도 보류해주세요. CCR이 승인되어 Integration Contract에 반영되면 Q7=A로 확정하고 domain-entities.md, business-logic-model.md, business-rules.md를 생성해주세요. (이유: hash_password()는 U2 내부 구현 결정이 아니라 U1 제공/U2 소비 Unit 간 public interface이므로 Integration Contract 대상. 병렬 개발 규칙상 공통 계약 부족 시 workaround 대신 Change Request 제출. 정상 흐름: 발견→CCR-001 제출→IL 검토→승인 시 IL이 INTEGRATION_CONTRACT.md만 v0.2.0으로 갱신→U1 통지→U1 helper 제공 책임 수락→U2 Q7=A→산출물 생성→사람 검토/승인→Code Generation.)"
+**AI Response**: "Set CCR-001 status to SUBMITTED (awaiting Integration Lead review). Holding: will NOT finalize Q7, will NOT implement any crypto, and will NOT generate the three Functional Design artifacts (domain-entities.md / business-logic-model.md / business-rules.md) until CCR-001 is approved and reflected into INTEGRATION_CONTRACT.md (expected v0.2.0) by the Integration Lead and U1 accepts the helper-provision responsibility. Did NOT edit INTEGRATION_CONTRACT.md or aidlc-state.md (Integration Lead single-writer). Q1-Q6/Q8-Q10 remain accepted defaults. Upon approval+notification, will fix Q7=A (U2 consumes U1 common.hash_password) and generate artifacts, then await human review before Code Generation."
+**Status**: CCR-001 SUBMITTED; U2 Functional Design artifact generation ON HOLD pending IL approval + contract v0.2.0
+**Context**: CONSTRUCTION - U2 Functional Design blocked on CCR-001 (normal parallel-dev contract-change flow)
+
+---
+
+## Integration Contract - CCR-001 APPROVED & MERGED (v0.2.0) [Integration Lead role]
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "U2에서 CCR-001을 제출했습니다. 요청: - CCR-001 검토 - 승인 시 INTEGRATION_CONTRACT.md §4/§12를 Integration Lead single-writer로 갱신 - contract version을 v0.2.0으로 변경 - U1에 hash_password/verify_password 제공 책임 통지. U2는 승인/반영 전까지 Functional Design 최종 산출물과 Code Generation을 보류합니다. 반영 완료 후 contract version과 변경 내용을 알려주세요."
+**AI Response**: "Acting as Integration Lead (explicitly delegated), reviewed CCR-001 and APPROVED: within approved scope (connects US-A6 setup_table + US-C1/FR-C1 verify), no new requirements, backward-compatible -> minor. Updated INTEGRATION_CONTRACT.md as single-writer: (§1) Contract Version v0.1.0 -> v0.2.0, Status FROZEN (v0.2.0), added 변경 이력 block; (§4) added hash_password(plaintext)->str / verify_password(plaintext, password_hash)->bool (bcrypt, U1 common/) + single-source note; (§12) added helper to U1 provides and to U2 consumes (hash_password for setup_table); (§15) added 적용된 CCR 이력 table (CCR-001 승인/v0.2.0) + explicit U1 notification of provision responsibility; updated closing status to FROZEN (v0.2.0). No schema/endpoint/event/OrderStatus changes. Marked CCR-001 file APPROVED & MERGED. Did NOT modify aidlc-state.md (reported change needed to IL/user instead). U2 may now fix Q7=A and generate Functional Design artifacts."
+**Status**: Contract v0.2.0 FROZEN (CCR-001 merged); U1 notified of hash_password/verify_password provision; U2 unblocked to finalize Q7=A and generate artifacts (still pre-Code-Generation, human review required)
+**Context**: §15 CCR flow executed by Integration Lead — contract v0.1.0 -> v0.2.0
+
+---
+
+## Construction (U2) - Functional Design artifacts generated
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "진행하세요. [Answer]: Q7=A — FROZEN Integration Contract v0.2.0에서 U1 common.hash_password() 제공과 U2 소비가 확정되었으므로 해당 계약을 따른다. 이제 U2에서 domain-entities.md, business-logic-model.md, business-rules.md 3개만 생성. 조건: Contract v0.2.0 하드 제약 준수 / Q1=A,Q2=D,Q3=A,Q4=A,Q5=A,Q6=A,Q7=A,Q8=A,Q9=A,Q10=A 반영 / U2 owned paths·책임만 / 새 요구사항 금지 / 추가 계약변경 필요시 CCR / 생성 후 사람 검토 대기 / 승인 전 Code Generation 금지. aidlc-state.md의 Contract v0.2.0 반영은 Integration Lead single-writer가 처리, U2 blocker 아님."
+**AI Response**: "Q7=A confirmed. Generated the three U2 Functional Design artifacts under aidlc-docs/construction/u2-order-session/functional-design/: domain-entities.md (TableConfig/TableSession/Order/OrderItem/OrderHistoryRecord/DomainEvent + ERD + value objects + consumed U1 interfaces incl. hash_password), business-logic-model.md (create_order, list_current, change_status, delete, list_tables, table detail, setup_table via U1 hash_password, end_session archive, history filter, Realtime pub/sub + SSE heartbeat, interactions, tx/error), business-rules.md (R-SEC/R-O/R-N/R-D/R-E/R-S/R-T/R-H/R-I/R-J/R-TX rules + §13 self-check + extension N/A + no-further-CCR-needed). All bound to contract v0.2.0; answers Q1-Q10 applied; scoped to U2 owned paths only; no new requirements; no product code. Updated plan checkboxes (Steps 1-6 done). Did NOT edit INTEGRATION_CONTRACT.md or aidlc-state.md. Presenting 2-option completion message; awaiting human review/approval before Code Generation."
+**Status**: U2 Functional Design artifacts complete — awaiting explicit human review/approval (Code Generation blocked until approved)
+**Context**: CONSTRUCTION - U2 Functional Design (Step 6-7): artifacts generated, awaiting approval
+
+---
+
+## CONSTRUCTION - U2 Code Generation (Steps 1-15 complete)
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "Approve & Continue. U2 Functional Design을 승인합니다. 다음 단계로 U2 Code Generation을 진행해주세요. 조건: FROZEN Integration Contract v0.2.0을 그대로 준수 / U2 owned paths만 수정 / U1의 hash_password()를 consume하고 bcrypt를 U2에서 중복 구현하지 않음 / DB transaction이 commit된 이후 domain event를 publish / SSE heartbeat가 필요하면 domain event type을 추가하지 말고 SSE comment/keep-alive로 처리 / main.py, INTEGRATION_CONTRACT.md, aidlc-state.md, 다른 Unit owned paths 수정 금지 / 계약 변경 필요 시 구현하지 말고 CCR 제출. Code Generation 완료 후 바로 임의로 통합하지 말고, 변경 파일, 실행한 테스트, 테스트 결과, 사용/제공한 Contract interface, Known limitation, Contract change 여부를 보고."
+**AI Response**: "Executed U2 Code Generation plan Steps 1-15. Created 3-layer code under U2 owned paths ONLY (order/, table_session/, order_history/, realtime/): repositories (sqlite3), framework-agnostic services (publish-after-commit; events returned by service, committed+published by router), Pydantic schemas, FastAPI routers incl. SSE stream with comment-line keep-alive (no new event type), consumed-contract adapter deps.py (placeholder deps + Ports for U1), wiring.py (single shared connection per request), http_errors.py ({error:{code,message}} envelope). Consumed U1 hash_password via PasswordHasherPort (no bcrypt reimplemented in U2). Wrote 29 unit tests (stdlib unittest + in-memory sqlite3 + fakes). Ran `python -m pytest app` -> 29 passed in 0.19s. Byte-compiled FastAPI/Pydantic layer (COMPILE OK; those libs not installed, runtime verified later at Build & Test). Wrote code-summary.md + integration-wiring-notes.md under aidlc-docs/construction/u2-order-session/code/. Did NOT modify main.py, INTEGRATION_CONTRACT.md, aidlc-state.md, or U1/U3 paths. No contract change needed (no new CCR). Did NOT auto-integrate/merge. Presenting report + 2-option completion message."
+**Status**: U2 Code Generation complete; tests 29/29 pass; no contract change; not integrated (awaiting human review)
+**Context**: CONSTRUCTION - U2 Code Generation - all 15 plan steps done, checkboxes updated
+
+---
+
+---
+
+## CONSTRUCTION - U2 Code Generation APPROVED + Handoff
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "시간 제약 때문에 order_no COUNT(*)+1 엣지케이스는 이번 단계에서 수정하지 않습니다. Known Limitation으로 유지해주세요. 현재 U2 Code Generation을 승인합니다. 추가 기능/리팩터링/테스트 확장은 하지 말고, 기존 29 passed 상태를 기준으로 handoff만 정리해주세요. main merge는 하지 마세요."
+**AI Response**: "U2 Code Generation approved. Kept order_no COUNT(*)+1 as a documented Known Limitation (no fix this stage). No new features/refactor/test expansion performed; code unchanged at 29 passed. Prepared handoff only: wrote aidlc-docs/construction/u2-order-session/code/handoff.md (branch/baseline, test status, mount+override checklist pointer, Known Limitations, no-contract-change note, aidlc-state change to REPORT to Integration Lead). Did NOT merge to main; did NOT modify INTEGRATION_CONTRACT.md or aidlc-state.md."
+**Status**: U2 Code Generation APPROVED; handoff prepared; not merged to main; aidlc-state update reported (not applied) to Integration Lead
+**Context**: CONSTRUCTION - U2 approved, handoff-only
+
+---

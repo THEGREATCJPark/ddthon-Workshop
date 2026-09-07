@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Greenfield
 - **Start Date**: 2026-09-07T04:43:51Z
-- **Current Stage**: Pre-Construction baseline established — checkpoint commit `2639417` + tag `pre-construction-v0.1.0` (pushed to origin/main). U1/U2/U3 parallel Construction not yet started.
+- **Current Stage**: Integration Build & Test complete — U1/U2/U3 merged; core table-order vertical slice verified against FROZEN contract v0.2.0.
 - **Team size**: 3 people (revised from 4), 1 unit per person + Integration Lead role (single-writer of main.py & INTEGRATION_CONTRACT.md)
 - **Context**: Half-day (약 반나절) AI-DLC team practice, 4 people. Goal is a working MVP that
   exercises the full AI-DLC flow (Inception → Unit decomposition → parallel Construction →
@@ -36,20 +36,27 @@
 - [x] Workflow Planning
 - [x] Application Design
 - [x] Units Generation
-- [x] Integration Contract (coordination, Q4=C) — FROZEN v0.1.0 (team-approved 2026-09-07; coordination/INTEGRATION_CONTRACT.md is the common baseline for U1/U2/U3)
+- [x] Integration Contract (coordination, Q4=C) — FROZEN v0.2.0 (CCR-001 password hashing capability approved; no schema/API/event change)
 
 ### 🟢 CONSTRUCTION PHASE
-- [ ] Functional Design — EXECUTE (per-unit, lightweight)
+- [x] Functional Design — EXECUTE (per-unit, lightweight)
 - [ ] NFR Requirements — SKIP (tech stack fixed; minimal NFRs inline)
 - [ ] NFR Design — SKIP
 - [ ] Infrastructure Design — SKIP (local run only)
-- [ ] Code Generation — EXECUTE (per-unit)
-- [ ] Build and Test — EXECUTE
+- [x] Code Generation — EXECUTE (per-unit)
+- [x] Build and Test — EXECUTE (U1 39 passed, U2 29 passed, integrated runtime/static/SSE vertical slice PASS)
 
 ## Execution Plan Summary
 - **Stages to Execute (remaining)**: Application Design, Units Generation, Functional Design (per-unit), Code Generation (per-unit), Build and Test
 - **Stages to Skip**: Reverse Engineering (greenfield), NFR Requirements, NFR Design, Infrastructure Design (half-day MVP / local-only / minimal NFR)
-- **Next Stage**: Units Generation
+- **Next Stage**: Workshop demo and review (Operations is outside AI-DLC v1 scope)
+
+## Integration Result (2026-09-07)
+- U1 merged and wired: Auth, Menu, error handlers, DB initialization, seed.
+- U2 merged and wired: Order, TableSession, OrderHistory, Realtime; U1 dependencies connected in the composition root.
+- U3 merged and wired: `/shared`, `/admin`, and customer `/` static mounts after all API routers.
+- Core E2E PASS: tablet login → menus → admin SSE connect → order create/`order.created` → admin detail → status update → customer current status.
+- Unrelated untracked `menuimage/` remained untouched.
 
 ## Extension Configuration
 | Extension | Enabled | Decided At |

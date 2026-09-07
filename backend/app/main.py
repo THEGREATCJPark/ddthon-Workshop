@@ -5,8 +5,10 @@ Currently wires U1 (Foundation·Auth·Menu). U2/U3 routers/static will be added
 here by the Integration Lead as those units are merged.
 """
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import Depends, FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.common import errors
 from app.persistence.db import db_dependency, get_connection, init_db
@@ -94,4 +96,8 @@ app.dependency_overrides[order_deps.get_connection] = _u2_db_dependency
 app.dependency_overrides[order_deps.get_menu_lookup] = _get_menu_lookup
 app.dependency_overrides[order_deps.get_password_hasher] = _get_password_hasher
 
-# U3 static mounts are added here after the frontend unit merges.
+# U3 static assets. Root customer mount must remain last so /api routes win.
+_frontend = Path(__file__).resolve().parents[2] / "frontend"
+app.mount("/shared", StaticFiles(directory=_frontend / "shared"), name="shared")
+app.mount("/admin", StaticFiles(directory=_frontend / "admin", html=True), name="admin")
+app.mount("/", StaticFiles(directory=_frontend / "customer", html=True), name="customer")

@@ -380,3 +380,12 @@ Workflow Planning에서는 반나절이라는 시간 제약을 반영해서,
 **Context**: CONSTRUCTION → U3 (Code Generation → Build/Test)
 
 ---
+
+## Integration Lead — U1/U2/U3 merge and vertical-slice verification
+**Timestamp**: 2026-09-07T07:40:00Z
+**User Input**: "U1이 통합된 main 위에 U2와 U3를 순차 병합하고 핵심 vertical slice를 15분 내 검증."
+**AI Response**: "Confirmed main 51baa0f with U1 wiring. Approved CCR-001 minimally and froze the authoritative contract at v0.2.0 using the existing U1 app.auth.security.hash_password capability. Merged U2 a06a682 and preserved both sides of audit.md; wired five routers and U1 auth/DB/menu/password capabilities in main.py. U1 tests 39/39 PASS, U2 tests 29/29 PASS, and runtime table setup/login/order/current/admin detail/status/end-session/history smoke PASS. Reviewed and merged U3 through 2d47b9a (expected 664ceb6 plus its Build/Test commit), preserved audit history, and mounted /shared, /admin, and / in safe order. Local Node syntax rerun skipped because Node is unavailable; U3 branch records prior 5/5 syntax and 18/18 unit PASS. Actual Uvicorn verification passed customer/admin/shared static routes and the full tablet login → menus → admin SSE → order.created → detail → status update → customer current-status flow. No new feature or contract surface was added; menuimage/ remained untouched."
+**Status**: Integration Build & Test PASS — ready for workshop demo
+**Context**: Integration Lead / final merge and verification
+
+---

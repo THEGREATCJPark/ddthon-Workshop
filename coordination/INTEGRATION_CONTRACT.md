@@ -11,9 +11,9 @@
 
 | 항목 | 값 |
 |---|---|
-| Contract Version | **v0.1.0** (initial integration baseline) |
+| Contract Version | **v0.2.0** (CCR-001: shared password hashing capability) |
 | Baseline commit SHA | **1926164** (`chore(workshop): prepare AI-DLC v1.0.1`) |
-| Status | **FROZEN (v0.1.0)** — 팀 검토 승인 완료 (2026-09-07). U1/U2/U3 병렬 Construction의 공통 baseline |
+| Status | **FROZEN (v0.2.0)** — CCR-001 승인 반영 (2026-09-07). DB schema/API/event 변경 없음 |
 | Frozen at | 2026-09-07 (team-approved) |
 | Derived from | requirements.md, stories.md, application-design/* , unit-of-work*.md |
 
@@ -133,6 +133,9 @@ TabletContext  = { store_id: int, table_no: int }
 # 표준 응답 포맷
 Success        = <endpoint별 body> (아래 §5)
 ErrorResponse  = { "error": { "code": str, "message": str } }
+
+# U1 Auth가 제공하는 bcrypt password hashing capability
+app.auth.security.hash_password(plaintext: str) -> str
 ```
 
 - **TabletContext는 고객 보호 API의 store_id/table_no에 대한 유일한 신뢰 출처(Source of Truth)**. 요청 body/query로 store/table 식별정보를 신뢰 입력으로 받지 않는다.
@@ -285,12 +288,13 @@ table_session.ended:
 - Auth: `POST /api/tablet/login`, `POST /api/admin/login`; 의존성 `verify_tablet_token → TabletContext`, `verify_admin_token → AdminContext`.
 - Menu: 고객 조회 + 관리자 CRUD/reorder (§5.2).
 - 공용 type/context(`common/`).
+- bcrypt password hashing capability: `app.auth.security.hash_password(plaintext: str) -> str`.
 - **consumes**: 없음.
 
 ### U2 provides
 - 주문 API(고객·관리자, §5.3/5.4) — 관리자 테이블 주문 상세 `GET /api/admin/tables/{table_no}/orders`(US-A2 연결) 포함, 세션·이력 API(이력에 원 주문 시각 `ordered_at` 보존), SSE 스트림(§7), 이벤트 발행(§8).
 - **order_id 일관성**: `order.created`(§8) payload의 `order_id`는 관리자 주문 상세·`PATCH`/`DELETE /api/admin/orders/{order_id}`에서 동일 식별자로 사용된다.
-- **consumes (from U1)**: Persistence/Repository, `verify_tablet_token`/`verify_admin_token`, Menu 단가/유효성 조회, 공용 type.
+- **consumes (from U1)**: Persistence/Repository, `verify_tablet_token`/`verify_admin_token`, Menu 단가/유효성 조회, 공용 type, table setup용 password hashing capability(`PasswordHasherPort`를 통해 소비).
 
 ### U3 provides
 - 정적 서빙 UI(고객 `/`, 관리자 `/admin`), F3 Shared JS(단독).
@@ -353,5 +357,9 @@ table_session.ended:
 
 ---
 
-### 상태: FROZEN (v0.1.0)
-이 계약은 **팀 검토·승인 완료**되어 **FROZEN (v0.1.0)** 이다. U1/U2/U3는 이 계약을 고정 baseline으로 병렬 Construction을 진행하며, 이후 변경은 §15 CCR 절차로만 수행한다.
+### 적용된 CCR
+
+- **CCR-001 (APPROVED, 2026-09-07)**: U1의 기존 `app.auth.security.hash_password`를 U2 table setup이 `PasswordHasherPort`로 소비하도록 provided/consumed interface에 명시했다. U1 제품 코드, DB schema, REST API, SSE/event 의미는 변경하지 않으며 U3 영향은 없다.
+
+### 상태: FROZEN (v0.2.0)
+이 계약은 CCR-001을 반영하여 **FROZEN (v0.2.0)** 이다. 이후 변경은 §15 CCR 절차로만 수행한다.

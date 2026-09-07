@@ -1,0 +1,8 @@
+# Python / test artifacts (U1 backend)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Local SQLite DB (created at runtime; not source)
+table_order.db
+*.db

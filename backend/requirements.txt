@@ -1,0 +1,11 @@
+# U1 (Foundation·Auth·Menu) — backend dependencies (single-writer: U1)
+# Pinned versions act as the lockfile for this half-day MVP.
+# Runtime
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+bcrypt==4.2.1
+PyJWT==2.10.1
+# Test (dev)
+pytest==8.3.4
+httpx==0.28.1

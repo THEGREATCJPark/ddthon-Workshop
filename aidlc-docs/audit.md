@@ -205,3 +205,76 @@ Workflow Planning에서는 반나절이라는 시간 제약을 반영해서,
 **AI Response**: "(1) Set INTEGRATION_CONTRACT.md Status to FROZEN (v0.1.0), team-approved 2026-09-07; added FROZEN rule (changes only via §15 CCR) and updated closing section. (2) Confirmed aidlc-state: Units Generation = [x] approved; Application Design [x]; Integration Contract now [x] FROZEN; updated Current Stage. (3) Verified git working state: branch=main, HEAD=1926164, only untracked = 20 documentation/contract files (aidlc-docs/* + coordination/INTEGRATION_CONTRACT.md); NO product code (no backend/ or frontend/ dirs) — Construction not started, as required. (4) Defined shared baseline for U1/U2/U3: recommended a single pre-construction checkpoint commit of the 20 docs on main so all three branch from the same commit with the FROZEN contract committed. Did NOT create the commit (on default branch main; awaiting user go-ahead per commit policy). No Functional Design or code started."
 **Status**: FROZEN v0.1.0; pre-construction baseline verified; awaiting user decision on checkpoint commit
 **Context**: Integration Contract FROZEN → pre-Construction baseline setup
+
+---
+
+## Construction / U1 — Functional Design (assignment)
+**Timestamp**: 2026-09-07T05:10:00Z
+**User Input**: "당신은 이번 AI-DLC 워크숍에서 U1 — Foundation · Auth · Menu만 담당합니다. 먼저 승인된 산출물(requirements/, Requirements, User Stories, Application Design, Units Plan, coordination/INTEGRATION_CONTRACT.md)을 읽고 Git 상태(branch=unit/u1-foundation, tag=pre-construction-v0.1.0, SHA=2639417)를 확인하세요. U1 책임: C0 Persistence, C1 Auth, C2 Menu. Owned paths: backend/app/persistence,auth,menu,common, backend/requirements.txt(+lock), backend/seed. Single-writer: DB schema/migration, common/ types, deps/lock, seed/sample data, seed_if_empty. 수정 금지: backend/app/order,table_session,order_history,realtime, frontend/, backend/app/main.py, coordination/INTEGRATION_CONTRACT.md, authoritative aidlc-docs/aidlc-state.md. FROZEN v0.1.0 계약(§3 schema, §4 AdminContext/TabletContext, TabletContext=Source of Truth, §5 Auth/Menu API, 16h tokens, bcrypt+login attempt limit, OrderStatus/event/SSE 불변) 준수. 지금은 U1 Functional Design만 진행하고 멈춰서 검토 요청. 승인 전 Code Generation/제품 코드 금지. 계약 변경 필요 시 CCR 제출."
+**AI Response**: "Verified git baseline (branch unit/u1-foundation @ 2639417 from tag pre-construction-v0.1.0; committed prior checkpoint bookkeeping to main). Loaded approved Requirements/Stories/Application Design/Units Plan/FROZEN INTEGRATION_CONTRACT v0.1.0. Produced U1 Functional Design artifacts ONLY (no product code): plan + domain-entities.md + business-logic-model.md + business-rules.md under aidlc-docs/construction/u1-foundation-auth-menu/functional-design/. Strictly conforms to FROZEN contract; did NOT modify forbidden areas or aidlc-state.md. Contract conflict: NO. CCR: NO. Stopped for review with documented open questions (JWT secret/alg, login-attempt-limit params, menu-delete-when-referenced, reorder partial-list semantics)."
+**Status**: U1 Functional Design produced — awaiting user review (no code generated)
+**Context**: Construction Phase / U1 Functional Design (per-unit)
+
+---
+
+## Construction / U1 — Functional Design (Request Changes, round 1)
+**Timestamp**: 2026-09-07T05:30:00Z
+**User Input**: "Request Changes. U1 Functional Design의 전체 구조와 Integration Contract 준수 방향은 유지. Code Generation 전에 다음만 수정: 1. 메뉴 삭제와 FK 정합성 — foreign_keys=ON이고 order_items.menu_id가 menus.id FK인데 'hard delete 후 dangling menu_id 허용'은 성립하지 않음. order_items의 name/unit_price snapshot을 유지하면서 메뉴 삭제가 가능하도록 FK 삭제 동작을 명확히 설계(권장: menu_id nullable + ON DELETE SET NULL). 단 이것이 FROZEN 계약의 shared DB schema 변경에 해당하면 계약을 임의 변경하지 말고 CCR이 필요하다고 보고. 2. JWT secret — HS256 유지, Git에 포함되는 고정 secret fallback 금지. TABLE_ORDER_JWT_SECRET 없을 경우 로컬 프로세스용 random secret 생성. 실제 credential 값은 문서/코드에 금지. 3. reorder 부분 목록 — ordered_ids 포함 메뉴를 지정 순서로 먼저 배치, 미포함은 기존 상대순서 유지하며 뒤에 배치 후 전체 display_order를 연속 값으로 재번호화. 4. 로그인 시도 제한 문구 — '(store_id, username) 기준 연속 5회 실패 시 10분 잠금'으로 명확히, 성공 시 카운터/잠금 리셋 유지. 그 외 내용 변경 금지. 수정 후 재검토 요청, 승인 전 Code Generation 금지."
+**AI Response**: "Applied all 4 changes to U1 Functional Design (structure/contract-conformance unchanged). (1) FK: designed order_items.menu_id as nullable + ON DELETE SET NULL preserving name/unit_price snapshot (no dangling). Judged this a shared-schema §3 change → did NOT edit FROZEN contract; documented a proposed Contract Change Request (minor, backward-compatible) in domain-entities §7 and flagged CCR needed (affects U2 order_items reader). (2) JWT: HS256 kept; secret from env TABLE_ORDER_JWT_SECRET, else process-start random secret (no committed fixed fallback); no secret values written. (3) reorder: specified partial-list rule — listed ids first in given order, unlisted keep relative order after, then renumber display_order to contiguous 0..N-1. (4) login limit: reworded to '(store_id, username) 연속 5회 실패 → 10분 잠금', success resets counter+lock. Updated domain-entities.md, business-logic-model.md, business-rules.md, plan.md. Awaiting re-review; no code generated."
+**Status**: Changes applied — awaiting user re-review; Contract Change Request (§3 order_items FK) proposed, contract NOT modified; no code generated
+**Context**: Construction Phase / U1 Functional Design (per-unit) revision round 1
+
+---
+
+## Construction / U1 — Functional Design (Request Changes, round 2 — CCR withdrawn)
+**Timestamp**: 2026-09-07T05:45:00Z
+**User Input**: "현재 CCR은 진행하지 않습니다. U2/U3가 이미 FROZEN Integration Contract v0.1.0을 기준으로 병렬 진행 중이고, 해당 이슈는 핵심 vertical slice의 blocker가 아니므로 이번 단계에서는 계약 안정성을 우선합니다. U1 Functional Design을 다음과 같이 정리: order_items.menu_id nullable + ON DELETE SET NULL을 확정 설계에서 제거; FROZEN 계약 §3의 현재 FK 정의를 그대로 구현 기준으로 사용; 참조되지 않은 메뉴 삭제는 정상 지원; 이미 order_items에서 참조 중인 메뉴 삭제의 세부 정책은 이번 Functional Design에서 새로 확정하지 마세요; 실제 Build/Test 또는 통합 과정에서 blocker가 되면 그때 CCR로 재검토; 현재 CCR 제안은 withdrawn/deferred로 표시. 다른 Functional Design 내용은 유지. 정리 후 Contract conflict: NO / Contract Change Request: NO / Known limitation: referenced menu deletion policy deferred unless it becomes an integration blocker 로 보고. 그 후 다시 검토 요청하고 Code Generation 전에 멈춰주세요."
+**AI Response**: "Removed nullable + ON DELETE SET NULL from the confirmed design; now implement §3 FK exactly as in FROZEN contract. Unreferenced menu deletion supported normally; referenced-menu deletion detailed policy NOT decided this stage (documented as Known limitation). Marked the prior FK CCR proposal as withdrawn/deferred in domain-entities §7. Updated domain-entities.md, business-logic-model.md (C5), business-rules.md (3.3, §7), plan.md (Q-U1-3, decisions header, compliance). No other Functional Design content changed. Contract conflict: NO. Contract Change Request: NO. Known limitation: referenced menu deletion policy deferred unless it becomes an integration blocker. Awaiting re-review; no code generated."
+**Status**: Changes applied — CCR withdrawn/deferred; contract NOT modified; Contract conflict NO / CCR NO; awaiting user re-review; no code generated
+**Context**: Construction Phase / U1 Functional Design (per-unit) revision round 2
+
+---
+
+## Construction / U1 — Functional Design APPROVED → proceed to Code Generation
+**Timestamp**: 2026-09-07T06:00:00Z
+**User Input**: "Functional Design은 승인 가능한 상태입니다. 한 문구만 일관되게 수정: business-logic-model.md의 관리자 로그인 실패 처리에서 '실패 카운터 증가 → 임계치 초과 시 잠금 설정'을 '실패 카운터 증가 → 연속 실패가 5회에 도달하면 10분 잠금 설정'으로 변경(business-rules.md 확정 규칙과 동일하게). 그 외 내용 변경 금지. 수정 후 U1 Functional Design을 승인합니다. Contract conflict: NO / Contract Change Request: NO / Known limitation은 현재 내용 그대로 유지. 수정 완료 후 U1 Code Generation 단계로 진행. FROZEN Integration Contract와 U1 owned path를 계속 준수."
+**AI Response**: "Applied the single wording fix in business-logic-model.md B1 step 4 to match business-rules.md ('연속 실패가 5회에 도달하면 10분 잠금 설정'). No other Functional Design content changed. U1 Functional Design APPROVED by user (Contract conflict NO / CCR NO / Known limitation retained). Proceeding to U1 Code Generation stage — starting with PART 1 (code generation plan with checkboxes) for approval before PART 2 (generation), per workflow. Did NOT modify authoritative aidlc-state.md (U1 no-touch); state tracking left to coordination."
+**Status**: U1 Functional Design APPROVED; entering Code Generation (PART 1 planning)
+**Context**: Construction Phase / U1 Functional Design approved → Code Generation
+
+---
+
+## Construction / U1 — Code Generation PART 1 (plan) — approval prompt
+**Timestamp**: 2026-09-07T06:05:00Z
+**User Input**: (approval pending — plan presented)
+**AI Response**: "Created U1 Code Generation plan at aidlc-docs/construction/plans/u1-foundation-auth-menu-code-generation-plan.md — 9 numbered steps with checkboxes and story traceability, covering backend/app/{common,persistence,auth,menu} + backend/seed + backend/requirements.txt (U1 owned paths only; main.py NOT created — IL owns; tests co-located per module). Conforms to FROZEN contract v0.1.0 (§3 FK as-is, §4/§5, 16h JWT, bcrypt, 5-fail/10-min lock) and retains the referenced-menu-deletion deferred limitation. Presented plan for approval; will NOT start PART 2 (product code) until user approves."
+**Status**: PART 1 plan presented — awaiting explicit approval before PART 2 generation
+**Context**: Construction Phase / U1 Code Generation PART 1 (planning)
+
+---
+
+## Construction / U1 — Code Generation PART 2 (generation)
+**Timestamp**: 2026-09-07T06:10:00Z
+**User Input**: "Continue to Next Stage. U1 Code Generation PART 2를 승인된 계획대로 진행해주세요. 현재 시간이 제한되어 있으므로 핵심 vertical slice의 dependency가 되는 DB schema, seed, Auth, Menu API와 contract tests를 최우선으로 완료해주세요. owned path와 FROZEN Integration Contract는 그대로 준수해주세요."
+**AI Response**: "PART 1 plan APPROVED. Generating U1 product code under owned paths only (backend/app/{common,persistence,auth,menu}, backend/seed, backend/requirements.txt); main.py NOT created (IL). Prioritized vertical-slice dependencies: §3 DB schema (all tables, FK as-is), seed_if_empty, Auth (bcrypt/JWT 16h/5-fail-10-min lock + verify_* dependencies), Menu API (list/CRUD/reorder + get_for_order), plus contract tests CT#1/#2/#3 and U1 unit tests. Conforms to FROZEN contract v0.1.0; referenced-menu-deletion policy left deferred."
+**Status**: PART 2 in progress — generating U1 code (owned paths only)
+**Context**: Construction Phase / U1 Code Generation PART 2 (generation)
+
+---
+
+## U1 Code Generation — PART 2 (generation complete)
+**Timestamp**: 2026-09-07T00:00:00Z
+**AI Response**: "U1 Code Generation PART 2 완료. 승인된 계획(9 스텝)의 owned path 내 코드 전량 생성: backend/requirements.txt(+requirements.lock.txt), backend/conftest.py, backend/.gitignore, app/common/{config,context,errors,timeutil,testing}, app/persistence/{schema(계약 §3 전체 8테이블·FK 그대로),db,repository}, seed/{sample_data,seeder(멱등)}, app/auth/{security(bcrypt·HS256 JWT 16h·typ claim),rate_limit(5회→10분),repository,service,dependencies,router(§5.1)}, app/menu/{repository(+U2용 get_for_order/get_many_for_order),service(검증·display_order·reorder·삭제 정책),router(§5.2)}. 각 모듈 co-located 테스트(test_common/test_persistence/test_seed/test_auth/test_menu) 및 계약 CT#1/#2/#3 포함. 코드 요약 문서 aidlc-docs/construction/u1-foundation-auth-menu/code/code-summary.md 생성. 로컬 pytest 39 passed. main.py 미생성(IL 소유), coordination/*·aidlc-state.md·U2/U3 경로 미수정, FROZEN 계약 v0.1.0 준수, 고정 JWT secret 없음, 실제 credential 값 없음(DEMO 기본값·해시만 저장). Known limitation(참조 메뉴 삭제 deferred → 409 CONFLICT) 유지. 계획 체크박스 Step 1~9 [x] 갱신."
+**Status**: PART 2 complete — 검토 대기(승인 전 Build & Test / 다음 단계 진행 없음)
+**Context**: Construction Phase / U1 Code Generation PART 2 (generation)
+
+---
+
+## U1 Code Generation approval + Build & Test (minimal verification)
+**Timestamp**: 2026-09-07T00:00:00Z
+**User Input**: "Continue to Next Stage. U1 Code Generation을 승인합니다. 시간 제약이 있으므로 Build & Test 단계는 U1 범위에서 최소 검증만 수행해주세요. * 새로운 기능 추가 금지 * 새로운 테스트 대량 작성 금지 * 기존 U1 테스트 전체 재실행 * 핵심 Contract CT#1/#2/#3 확인 * 실패가 없으면 즉시 Build & Test 완료 처리 * Known limitation은 현재 내용 그대로 유지 * FROZEN Integration Contract 변경 금지 * main.py / U2 / U3 / authoritative aidlc-state.md 수정 금지. 완료 후 바로 다음 handoff를 보고해주세요. [handoff template]. 그 후 U1 변경을 commit하고 branch를 origin에 push할 수 있도록 준비해주세요. 추가 기능 개발은 하지 마세요."
+**AI Response**: "U1 Code Generation 승인 처리. Build & Test 최소 검증 수행(신규 기능/대량 테스트 없음): 기존 U1 테스트 전체 재실행 → 39 passed(실패 0). 핵심 계약 CT#1(tablet login 성공/401)·CT#2(admin JWT/반복실패 429)·CT#3(menus display_order 정렬/무인증 401) 개별 재확인 통과. build-and-test-summary.md 생성. Known limitation 유지, FROZEN 계약 미변경, main.py/U2/U3/aidlc-state.md 미수정. U1 변경(owned paths + U1 aidlc-docs)만 commit, menuimage/·aidlc-state.md 제외."
+**Status**: U1 Build & Test 최소 검증 완료 — commit/push 준비
+**Context**: Construction Phase / U1 Build & Test (minimal)
+
+---

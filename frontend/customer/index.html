@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>테이블오더 · 주문</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!--
+    정적 서빙 가정: frontend/ 트리를 보존해 마운트(customer/ · admin/ · shared/).
+    app.js 는 ../shared/*.js 를 ES module 로 import 한다. (U3 owned; 조립은 Integration Lead)
+  -->
+  <div id="app" class="app-root"></div>
+  <div id="toast-host" class="toast-host" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

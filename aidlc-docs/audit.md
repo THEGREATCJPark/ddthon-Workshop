@@ -230,3 +230,12 @@ Workflow Planning에서는 반나절이라는 시간 제약을 반영해서,
 **Context**: CONSTRUCTION → U3 (Functional Design 승인 → Code Generation 완료)
 
 ---
+
+## Construction (U3 Frontend) - Build & Test
+**Timestamp**: 2026-09-07T07:25:00Z
+**User Input**: "build와 test 좀 해봐라 일단 대충 push해서"
+**AI Response**: "U3는 무빌드 Vanilla JS 정적 프론트라 별도 빌드 산출물 없음(=정적 트리 서빙). 검증 3단계 모두 GREEN: (1) 문법: node --check --input-type=module 로 5개 모듈(format/api/sse/customer.app/admin.app) 전부 OK. (2) 단위: frontend/shared/shared.test.mjs 신규 추가(무의존성, node로 실행) → 18/18 PASS (ORDER_STATUSES·statusLabel·formatCurrency·escapeHtml·formatDateTime·itemSummary + api 팩토리 계약). (3) 브라우저 스모크: python http.server(:8137, frontend/ 루트)로 정적 서빙(.js=text/javascript 확인) 후 Playwright 렌더 테스트 — customer=인증(auth) 뷰, admin=로그인 뷰 정상 렌더, import 해결·런타임 에러 없음(favicon 404만). 상호작용: admin 빈 로그인 클릭→검증 토스트 노출로 이벤트 위임 확인. 백엔드(U1/U2) 미구현이라 API 연동/SSE 실동작 테스트는 통합 단계로 유보. 결과를 u3-frontend-functional-design 브랜치에 push(main 미merge)."
+**Status**: Build(정적, 무빌드) OK; Test GREEN(문법 5/5, 단위 18/18, 브라우저 스모크 2/2 뷰 + 상호작용); 백엔드 연동 테스트는 통합 시점으로 유보
+**Context**: CONSTRUCTION → U3 (Code Generation → Build/Test)
+
+---

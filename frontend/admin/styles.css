@@ -1,0 +1,104 @@
+/* F2 AdminApp — 데스크톱 그리드 기준 (Q19=A) */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --danger: #dc2626;
+  --ok: #16a34a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+
+button { font-family: inherit; font-size: 14px; cursor: pointer; }
+.btn { min-height: 38px; padding: 0 14px; border: none; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 600; }
+.btn:active { background: var(--primary-dark); }
+.btn.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+.btn.danger { background: var(--danger); }
+.btn.ghost { background: transparent; color: var(--primary); }
+.btn.sm { min-height: 32px; padding: 0 10px; font-size: 13px; }
+.btn:disabled { opacity: 0.5; }
+
+/* 로그인 */
+.auth-wrap { max-width: 400px; margin: 60px auto; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+.auth-wrap h1 { font-size: 20px; margin-top: 0; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.field input, .field textarea, .field select {
+  width: 100%; min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px;
+}
+.auth-wrap .btn { width: 100%; }
+
+/* 상단바 */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5; }
+.topbar .title { font-weight: 700; font-size: 18px; }
+.topbar .right { display: flex; gap: 10px; align-items: center; }
+.topbar .who { color: var(--muted); font-size: 13px; }
+
+/* 필터 칩 (Q14=B 다중선택) */
+.filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 24px; background: #fff; border-bottom: 1px solid var(--border); }
+.chip { min-height: 34px; padding: 0 14px; border: 1px solid var(--border); border-radius: 18px; background: #fff; }
+.chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* 대시보드 그리드 */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding: 24px; }
+.table-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: background 3.5s ease; }
+.table-card.hl { background: #fff7ed; transition: none; } /* 신규주문 하이라이트 → 이후 페이드 (Q12=A) */
+.table-card .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.table-card .tno { font-size: 18px; font-weight: 800; }
+.table-card .total { color: var(--primary); font-weight: 800; }
+.table-card .preview { color: var(--muted); font-size: 13px; min-height: 18px; }
+.table-card .status-dot { font-size: 12px; margin-top: 8px; }
+.table-card .status-dot.active { color: var(--ok); }
+.table-card .status-dot.idle { color: var(--muted); }
+
+.empty { text-align: center; color: var(--muted); padding: 60px 20px; }
+
+/* 모달 */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+.modal { background: #fff; border-radius: 14px; width: 100%; max-width: 640px; max-height: 86vh; overflow: hidden; display: flex; flex-direction: column; }
+.modal .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.modal .modal-head h2 { font-size: 17px; margin: 0; }
+.modal .modal-body { padding: 16px 20px; overflow-y: auto; }
+.modal .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+.modal.small { max-width: 420px; }
+
+/* 주문 상세 행 */
+.detail-order { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.detail-order .do-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.detail-order .items { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+.status-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.status-btns .btn.sm { border: 1px solid var(--border); background: #fff; color: var(--text); }
+.status-btns .btn.sm.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.badge.PENDING { background: #fef3c7; color: #92400e; }
+.badge.IN_PROGRESS { background: #dbeafe; color: #1e40af; }
+.badge.DONE { background: #dcfce7; color: #166534; }
+
+/* 이력 필터 */
+.presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.date-range { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 12px; }
+.date-range .field { margin-bottom: 0; }
+
+/* 메뉴 관리 */
+.menu-admin { padding: 24px; }
+.menu-cat-group { margin-bottom: 20px; }
+.menu-cat-group h3 { border-bottom: 2px solid var(--border); padding-bottom: 6px; }
+.menu-admin-row { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
+.menu-admin-row .ma-name { flex: 1; font-weight: 600; }
+.menu-admin-row .ma-price { color: var(--primary); font-weight: 700; }
+.menu-admin-row .ma-actions { display: flex; gap: 6px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+
+/* 토스트 */
+.toast-host { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 100; }
+.toast { padding: 12px 18px; border-radius: 10px; color: #fff; font-weight: 600; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.toast.success { background: var(--ok); }
+.toast.error { background: var(--danger); }
+.toast.info { background: #374151; }

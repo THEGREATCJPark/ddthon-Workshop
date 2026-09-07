@@ -308,4 +308,4 @@ C) 에러 메시지만 표시하고 사용자가 수동 조치
 
 D) Other (please describe after [Answer]: tag below)
 
-[Answer]: A
+[Answer]: D — 401 발생 시 관리자 토큰은 삭제하고 로그인 화면으로 전환한다. 고객 태블릿은 만료된 tablet_token을 삭제하고 최초 인증/재인증 화면으로 전환한다. 저장된 store_id/table_no는 입력 편의를 위해 사용할 수 있지만 table_password를 localStorage에 새로 저장하거나 자동 재로그인을 시도하지 않는다.

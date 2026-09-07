@@ -1,0 +1,119 @@
+/* F1 CustomerApp — 태블릿 가로 고정 기준 레이아웃 (Q19=A) */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --danger: #dc2626;
+  --ok: #16a34a;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+.app-root { height: 100%; }
+
+/* 터치 타깃 최소 44px (요구사항 §3.1.2) */
+button { font-family: inherit; font-size: 15px; cursor: pointer; }
+.btn {
+  min-height: 44px; padding: 0 16px; border: none; border-radius: 8px;
+  background: var(--primary); color: #fff; font-weight: 600;
+}
+.btn:active { background: var(--primary-dark); }
+.btn.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+.btn.ghost { background: transparent; color: var(--primary); }
+.btn:disabled { opacity: 0.5; }
+
+/* ---- 재인증 / 로그인 화면 ---- */
+.auth-wrap { max-width: 420px; margin: 0 auto; padding: 48px 20px; }
+.auth-wrap h1 { font-size: 22px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.field input {
+  width: 100%; min-height: 44px; padding: 0 12px;
+  border: 1px solid var(--border); border-radius: 8px; font-size: 16px;
+}
+.auth-wrap .btn { width: 100%; margin-top: 8px; }
+
+/* ---- 메뉴 화면 ---- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 5;
+}
+.topbar .title { font-weight: 700; font-size: 18px; }
+.cat-tabs {
+  display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px;
+  background: #fff; border-bottom: 1px solid var(--border);
+  position: sticky; top: 57px; z-index: 4;
+}
+.cat-tab {
+  min-height: 44px; padding: 0 16px; border: 1px solid var(--border);
+  border-radius: 22px; background: #fff; white-space: nowrap;
+}
+.cat-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.menu-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px; padding: 20px; padding-bottom: 120px;
+}
+.menu-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.menu-card .menu-img { width: 100%; height: 130px; object-fit: cover; background: #e5e7eb; }
+.menu-card .body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.menu-card .name { font-weight: 700; }
+.menu-card .price { color: var(--primary); font-weight: 700; }
+.menu-card .desc { color: var(--muted); font-size: 13px; flex: 1; }
+
+/* ---- 하단 고정 장바구니 바 (Q8=A) ---- */
+.cart-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: #fff; border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+}
+.cart-summary {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; min-height: 60px;
+}
+.cart-summary .info { font-weight: 600; }
+.cart-detail { max-height: 45vh; overflow-y: auto; border-top: 1px solid var(--border); padding: 8px 20px; }
+.cart-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.cart-item .ci-name { flex: 1; font-weight: 600; }
+.qty-ctl { display: flex; align-items: center; gap: 8px; }
+.qty-ctl button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: #fff; font-size: 18px; }
+.cart-actions { display: flex; gap: 10px; padding: 12px 0; }
+.cart-actions .btn { flex: 1; }
+
+/* ---- 주문 성공 ---- */
+.success-wrap { max-width: 420px; margin: 0 auto; padding: 80px 20px; text-align: center; }
+.success-wrap .order-no { font-size: 28px; font-weight: 800; color: var(--primary); margin: 16px 0; }
+.success-wrap .hint { color: var(--muted); }
+
+/* ---- 주문 내역 ---- */
+.history-wrap { padding: 20px; padding-bottom: 40px; }
+.order-row { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+.order-row .row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.order-row .items { color: var(--muted); font-size: 14px; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.badge.PENDING { background: #fef3c7; color: #92400e; }
+.badge.IN_PROGRESS { background: #dbeafe; color: #1e40af; }
+.badge.DONE { background: #dcfce7; color: #166534; }
+
+.empty { text-align: center; color: var(--muted); padding: 60px 20px; }
+
+/* ---- 토스트 (Q18=A) ---- */
+.toast-host { position: fixed; left: 0; right: 0; bottom: 90px; display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 100; pointer-events: none; }
+.toast { pointer-events: auto; max-width: 90%; padding: 12px 18px; border-radius: 10px; color: #fff; font-weight: 600; box-shadow: 0 6px 16px rgba(0,0,0,0.2); animation: toast-in 0.15s ease-out; }
+.toast.success { background: var(--ok); }
+.toast.error { background: var(--danger); }
+.toast.info { background: #374151; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

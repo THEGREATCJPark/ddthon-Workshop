@@ -205,3 +205,28 @@ Workflow Planning에서는 반나절이라는 시간 제약을 반영해서,
 **AI Response**: "(1) Set INTEGRATION_CONTRACT.md Status to FROZEN (v0.1.0), team-approved 2026-09-07; added FROZEN rule (changes only via §15 CCR) and updated closing section. (2) Confirmed aidlc-state: Units Generation = [x] approved; Application Design [x]; Integration Contract now [x] FROZEN; updated Current Stage. (3) Verified git working state: branch=main, HEAD=1926164, only untracked = 20 documentation/contract files (aidlc-docs/* + coordination/INTEGRATION_CONTRACT.md); NO product code (no backend/ or frontend/ dirs) — Construction not started, as required. (4) Defined shared baseline for U1/U2/U3: recommended a single pre-construction checkpoint commit of the 20 docs on main so all three branch from the same commit with the FROZEN contract committed. Did NOT create the commit (on default branch main; awaiting user go-ahead per commit policy). No Functional Design or code started."
 **Status**: FROZEN v0.1.0; pre-construction baseline verified; awaiting user decision on checkpoint commit
 **Context**: Integration Contract FROZEN → pre-Construction baseline setup
+
+## Construction (U3 Frontend) - Functional Design: Questions Generated
+**Timestamp**: 2026-09-07T05:10:00Z
+**User Input**: "윈도우로 하고 유저3용 대답을 하자 / 문제를 줘 / 질문을 줘 내가 답을하게"
+**AI Response**: "Entered CONSTRUCTION phase for U3 — Frontend. Per functional-design.md Step 3 + question-format-guide.md, generated a Functional Design questions file at aidlc-docs/construction/plans/u3-frontend-functional-design-questions.md (20 multiple-choice questions with [Answer]: tags, 'Other' as last option). Questions scoped to U3 (F1 CustomerApp, F2 AdminApp, F3 Shared JS) and deliberately EXCLUDE items already fixed by FROZEN Integration Contract v0.1.0 (API signatures/paths, OrderStatus values, SSE fetch-based approach, Bearer auth, cart=localStorage, order-success flow). Categories: app structure/rendering, state/storage, customer UX, admin UX, realtime/feedback/device. Awaiting user's answers before generating functional-design artifacts. No product code written yet."
+**Context**: CONSTRUCTION → U3 Functional Design (Part: question generation), Windows workspace (D:\aidlc-workshop\ddthon-Workshop)
+
+---
+
+## Construction (U3 Frontend) - Functional Design: Answers Collected
+**Timestamp**: 2026-09-07T05:40:00Z
+**User Input**: "질문을 하나씩 주고 내가 선택하게 / (AskUserQuestion 인터랙티브 선택으로 20문항 응답)"
+**AI Response**: "Collected all 20 U3 Functional Design answers via interactive selection and recorded each into aidlc-docs/construction/plans/u3-frontend-functional-design-questions.md [Answer]: tags. Answers: Q1=A(단일HTML+JS뷰전환), Q2=A(템플릿문자열+innerHTML, 위임→권장), Q3=A(모듈 state+명시적 재렌더), Q4=A(둘다 localStorage), Q5=C(단일키+store/table 메타), Q6=B(장바구니에 이름·단가 보관, 전송은 menu_id/qty), Q7=A(상단 가로 탭바), Q8=A(하단 고정바→펼침), Q9=A(5초 후 자동 리다이렉트), Q10=A(공통 플레이스홀더 이미지), Q11=A(주문내역 탭 뷰전환), Q12=A(카드 배경 하이라이트 페이드), Q13=A(상태 버튼 3개), Q14=B(테이블 칩 토글 다중), Q15=A(커스텀 모달), Q16=B(프리셋+커스텀 날짜), Q17=A(고정 3초 재시도), Q18=A(토스트), Q19=A(고객=태블릿가로/관리자=데스크톱), Q20=A(관리자=로그인전환/고객=자동재로그인). Ambiguity/contradiction check: no vague answers; consistent. Note: Q20 customer auto re-login requires storing tablet setup creds(store_id/table_no/table_password) in localStorage (per FR-C1 자동로그인 정보 저장) — captured as design decision, non-blocking. Proceeding to generate functional-design artifacts."
+**Context**: CONSTRUCTION → U3 Functional Design (Part: answers collected & analyzed)
+
+---
+
+## Construction (U3 Frontend) - Q20 Correction + FD Artifacts + Code Generation
+**Timestamp**: 2026-09-07T06:30:00Z
+**User Input**: "Q1~Q19 승인, Q20만 Other(D)로 수정 — 401 시 관리자=토큰폐기+로그인전환, 고객=만료 tablet_token 폐기+재인증화면; store_id/table_no는 프리필용, table_password 저장·자동재로그인 금지. FD 산출물 생성 후 검토 대기 → 승인 → 프론트 코드 생성 (main merge 금지)."
+**AI Response**: "(1) Q20 A→D 정정: 승인된 Application Design이 tablet_token+store/table config는 localStorage에 저장하되 table_password 저장은 확정하지 않았으므로 자동 재로그인 전제를 폐기. questions 파일 [Answer]: D 로 갱신(Q1~Q19 유지). (2) FD 산출물 생성 aidlc-docs/construction/u3-frontend/functional-design/: domain-entities.md(CustomerAuthState.config={store_id,table_no}, table_password 미보관), business-logic-model.md(§2 인증흐름·§12 401 처리 Q20=D), business-rules.md(BR-A/C/O/D/H/M/X), frontend-components.md(F1/F2/F3 분해) — 사용자 승인 완료. (3) Code Generation 완료: frontend/shared/{format.js,api.js,sse.js}(F3), frontend/customer/{index.html,styles.css,app.js}(F1), frontend/admin/{index.html,styles.css,app.js}(F2). 계약 준수: 주문 body={items:[{menu_id,qty}]}, SSE=fetch+ReadableStream, 401→onUnauthorized(토큰폐기+재인증/로그인), OrderStatus PENDING/IN_PROGRESS/DONE. branch=u3-frontend-functional-design 유지, main merge 안 함. 산출물·코드는 아직 uncommitted(로컬)."
+**Status**: U3 Functional Design 승인 + Code Generation 완료; 로컬 상태(미커밋); Build/Test 등 다음 단계는 사용자 확인 대기
+**Context**: CONSTRUCTION → U3 (Functional Design 승인 → Code Generation 완료)
+
+---

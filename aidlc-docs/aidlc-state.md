@@ -3,7 +3,7 @@
 ## Project Information
 - **Project Type**: Greenfield
 - **Start Date**: 2026-09-07T04:43:51Z
-- **Current Stage**: Integration Contract FROZEN (v0.1.0) — pre-Construction baseline ready; U1/U2/U3 parallel Construction not yet started
+- **Current Stage**: Pre-Construction baseline established — checkpoint commit `2639417` + tag `pre-construction-v0.1.0` (pushed to origin/main). U1/U2/U3 parallel Construction not yet started.
 - **Team size**: 3 people (revised from 4), 1 unit per person + Integration Lead role (single-writer of main.py & INTEGRATION_CONTRACT.md)
 - **Context**: Half-day (약 반나절) AI-DLC team practice, 4 people. Goal is a working MVP that
   exercises the full AI-DLC flow (Inception → Unit decomposition → parallel Construction →
